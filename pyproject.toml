@@ -1,6 +1,6 @@
 [project]
 name = "iflow-mcp_xhs-toolkit"
-version = "1.2.0"
+version = "1.2.1"
 description = "一个强大的小红书自动化工具包，支持通过MCP协议与AI客户端集成"
 readme = "README.md"
 requires-python = ">=3.10"

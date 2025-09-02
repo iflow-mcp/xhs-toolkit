@@ -233,8 +233,8 @@ class MCPServer:
                 return error_msg
         
         @self.mcp.tool()
-        async def smart_publish_note(title: str, content: str, images=None, videos=None, 
-                                   topics=None, location: str = "") -> str:
+        async def smart_publish_note(title: str, content: str, images:str|list[str]=None, videos:str|list[str]=None,
+                                   topics:str|list[str]=None, location: str = "") -> str:
             """
             发布小红书笔记（支持多种输入格式）
             
