@@ -4,9 +4,9 @@ version = "1.2.0"
 description = "一个强大的小红书自动化工具包，支持通过MCP协议与AI客户端集成"
 readme = "README.md"
 requires-python = ">=3.10"
-license = {text = "MIT"}
+license = { text = "MIT" }
 authors = [
-    {name = "aki66938"},
+    { name = "aki66938" },
 ]
 keywords = ["xiaohongshu", "mcp", "automation", "ai", "小红书"]
 classifiers = [
@@ -44,7 +44,7 @@ dev = [
 ]
 
 [project.scripts]
-xhs-toolkit = "xhs_toolkit:main"
+xhs-toolkit = "src.server.mcp_server:main"
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
@@ -52,7 +52,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["src*", "xhs_toolkit*"]
+include = ["src*"]
 
 [tool.setuptools.package-dir]
 "" = "."

@@ -379,6 +379,9 @@ class XHSClient:
             # 尝试多个内容选择器
             content_selectors = [
                 ".ql-editor",
+                "[contenteditable='true']",
+                ".editable",
+                "[data-placeholder*='说说']",
                 "[placeholder*='内容']",
                 "[placeholder*='content']",
                 "textarea",
@@ -614,6 +617,9 @@ class XHSClient:
             # 检查内容输入框是否存在
             content_selectors = [
                 ".ql-editor",
+                "[contenteditable='true']",
+                ".editable",
+                "[data-placeholder*='说说']",
                 "[placeholder*='内容']",
                 "[placeholder*='content']",
                 "textarea",

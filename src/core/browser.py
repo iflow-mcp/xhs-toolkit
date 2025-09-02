@@ -5,6 +5,9 @@
 """
 
 import asyncio
+import os
+import platform
+import tempfile
 import time
 from typing import Optional, List, Dict, Any
 from selenium import webdriver
@@ -155,8 +158,18 @@ class ChromeDriverManager:
         # 窗口大小
         chrome_options.add_argument('--window-size=1920,1080')
 
-        # 添加文件保存位置
-        chrome_options.add_argument(f'--user-data-dir=/home/seluser/google-chrome-data')
+        # 添加文件保存位置 - 使用平台特定的临时目录
+        # 根据操作系统选择合适的用户数据目录
+        if platform.system() == 'Darwin':  # macOS
+            user_data_dir = os.path.join(tempfile.gettempdir(), 'xhs-chrome-data')
+        elif platform.system() == 'Windows':
+            user_data_dir = os.path.join(tempfile.gettempdir(), 'xhs-chrome-data')
+        else:  # Linux
+            user_data_dir = '/home/seluser/google-chrome-data'
+        
+        # 确保目录存在
+        os.makedirs(user_data_dir, exist_ok=True)
+        chrome_options.add_argument(f'--user-data-dir={user_data_dir}')
         
         # 调试选项
         if self.config.debug_mode:

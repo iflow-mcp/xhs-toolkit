@@ -13,7 +13,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
 
 from ..interfaces import IContentFiller, IBrowserManager
-from ..constants import (XHSConfig, XHSSelectors, get_title_input_selectors)
+from ..constants import (XHSConfig, XHSSelectors, get_title_input_selectors, get_content_editor_selectors)
 from ...core.exceptions import PublishError, handle_exception
 from ...utils.logger import get_logger
 from ...utils.text_utils import clean_text_for_browser
@@ -221,20 +221,26 @@ class XHSContentFiller(IContentFiller):
         driver = self.browser_manager.driver
         wait = WebDriverWait(driver, XHSConfig.DEFAULT_WAIT_TIME)
         
-        try:
-            logger.debug(f"🔍 查找内容编辑器: {XHSSelectors.CONTENT_EDITOR}")
-            content_editor = wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, XHSSelectors.CONTENT_EDITOR))
-            )
-            
-            if content_editor and content_editor.is_enabled():
-                logger.info("✅ 找到内容编辑器")
-                return content_editor
-            
-        except TimeoutException:
-            logger.error("⏰ 内容编辑器查找超时")
-        except Exception as e:
-            logger.error(f"⚠️ 内容编辑器查找错误: {e}")
+        # 尝试多个内容编辑器选择器
+        selectors = get_content_editor_selectors()
+        
+        for selector in selectors:
+            try:
+                logger.debug(f"🔍 尝试查找内容编辑器: {selector}")
+                content_editor = wait.until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, selector))
+                )
+                
+                if content_editor and content_editor.is_enabled():
+                    logger.info(f"✅ 找到内容编辑器: {selector}")
+                    return content_editor
+                    
+            except TimeoutException:
+                logger.debug(f"⏰ 内容编辑器选择器超时: {selector}")
+                continue
+            except Exception as e:
+                logger.debug(f"⚠️ 内容编辑器选择器错误: {selector}, {e}")
+                continue
         
         logger.error("❌ 未找到可用的内容编辑器")
         return None

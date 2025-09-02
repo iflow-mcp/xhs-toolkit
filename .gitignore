@@ -29,6 +29,7 @@ MANIFEST
 
 # 虚拟环境
 .venv/
+venv/
 env/
 ENV/
 
@@ -67,6 +68,8 @@ temp/
 *.tmp
 *.bak
 error_screenshot.png
+publish_error_screenshot.png
+*screenshot*.png
 
 # 测试覆盖率
 .coverage

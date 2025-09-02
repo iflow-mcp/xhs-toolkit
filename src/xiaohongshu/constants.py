@@ -32,6 +32,9 @@ class XHSSelectors:
     TITLE_INPUT = ".d-text"
     TITLE_INPUT_ALT = "[placeholder*='标题']"
     CONTENT_EDITOR = ".ql-editor"
+    CONTENT_EDITOR_ALT1 = "[contenteditable='true']"
+    CONTENT_EDITOR_ALT2 = ".editable"
+    CONTENT_EDITOR_ALT3 = "[data-placeholder*='说说']"
     
     # 发布按钮
     PUBLISH_BUTTON = ".publishBtn"
@@ -135,3 +138,13 @@ def is_supported_video_format(file_path: str) -> bool:
     import os
     _, ext = os.path.splitext(file_path.lower())
     return ext in XHSConfig.SUPPORTED_VIDEO_FORMATS 
+
+
+def get_content_editor_selectors() -> List[str]:
+    """获取内容编辑器选择器列表，按优先级排序"""
+    return [
+        XHSSelectors.CONTENT_EDITOR,
+        XHSSelectors.CONTENT_EDITOR_ALT1,
+        XHSSelectors.CONTENT_EDITOR_ALT2,
+        XHSSelectors.CONTENT_EDITOR_ALT3
+    ]
