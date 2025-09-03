@@ -181,7 +181,7 @@ class XHSConfig:
         if self.log_level not in valid_log_levels:
             issues.append(f"无效的日志级别: {self.log_level}")
         
-        # 检查Cookies目录是否可写
+        # 检查Cookies目录是否可写，如果不可写则使用安全的替代路径
         cookies_dir = Path(self.cookies_dir)
         try:
             cookies_dir.mkdir(parents=True, exist_ok=True)
@@ -190,8 +190,37 @@ class XHSConfig:
             test_file.touch()
             test_file.unlink()
         except Exception:
-            issues.append(f"Cookies目录不可写: {self.cookies_dir}")
-        
+            # 如果当前目录不可写，尝试使用安全的替代路径
+            safe_paths = [
+                # 1. 用户主目录下的.xhs_toolkit目录
+                Path.home() / ".xhs_toolkit",
+                # 2. 系统临时目录
+                Path.cwd() / "temp" if Path.cwd().is_dir() else Path("/tmp"),
+            ]
+
+            cookies_dir_found = False
+            for safe_path in safe_paths:
+                try:
+                    safe_path.mkdir(parents=True, exist_ok=True)
+                    # 测试写权限
+                    test_file = safe_path / ".test_write"
+                    test_file.touch()
+                    test_file.unlink()
+
+                    # 更新cookies配置到安全路径
+                    self.cookies_dir = str(safe_path)
+                    self.cookies_file = str(safe_path / "xhs_cookies.json")
+                    cookies_dir_found = True
+                    logger.info(f"📁 Cookies目录已更新为安全路径: {self.cookies_dir}")
+                    break
+                except Exception:
+                    continue
+
+            if not cookies_dir_found:
+                # 如果所有路径都不可写，则禁用cookies功能但不阻止程序运行
+                logger.warning("⚠️ 无法找到可写的Cookies目录，将禁用Cookies功能")
+                self.cookies_file = ""  # 禁用cookies
+
         # 远程浏览器配置验证（仅在启用时验证）
         if self.enable_remote_browser:
             if not (1024 <= self.remote_browser_port <= 65535):
